@@ -22,7 +22,7 @@
   (package
     (name "guix-graze")
     (version "1.0")
-    (source (local-file "/home/bigbug/guix-config/util/scheme/gshell.scm"))
+    (source (local-file "TODO"))
     (build-system copy-build-system)
     (arguments
      '(#:install-plan '(("gshell.scm"
