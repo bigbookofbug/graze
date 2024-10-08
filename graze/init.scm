@@ -1,5 +1,8 @@
+(add-to-load-path (string-append (getenv "HOME") "/Documents/graze/"))
+
 (define-module (graze init))
-(use-modules (guix build utils)
+(use-modules (graze common)
+	     (guix build utils)
 	     (ice-9 pretty-print)
 	     (ice-9 command-line)
 	     (ice-9 regex)
@@ -13,34 +16,23 @@
 	    (string-append dir-local "/"))
 	#f)))
 
-(define (dir-empty? dir)
-    (cond ((eof-object? (readdir dir))
-	   (closedir dir)
-	   #t)
-	  (else
-	   (cond ((equal? (readdir dir) (and "." ".."))
-	   (readdir dir)
-	   (dir-empty? dir))
-		 (else
-		  (closedir dir)
-		  #f)))))
+(define shell-file (string-append (getcwd)"/""shell.scm"))
 
 (define (init-default)
   (if (not (dir-empty? (opendir (getcwd))))
       (pretty-print "WARNING: Directory not empty!" #:display? #t))
-  (cond ((file-exists?
-	  (string-append
-	   (getcwd) "/" "shell.scm"))
-	 (pretty-print
+  (cond ((shell-file-found?)
+	 (pp-display
 	  "ERROR: Directory already contains a 'shell.scm'!
 Unable to create a shell file in directory where one already exists.
-Exiting." #:display? #t))
-	(else (pretty-print (string-append "Created a default 'shell.scm' in "
-					   (getcwd)) #:display? #t)
+Exiting."))
+	(else (pp-display (string-append "Created a default 'shell.scm' in "
+					   (getcwd)))
 	      ;; TODO absolute path needs fixing
-	      (copy-file (string-append (getenv "HOME") "/Documents/graze/default.scm")
+	      (copy-file (string-append (getenv "HOME") "/Documents/graze/graze/default.scm")
 			 (string-append
-			  (getcwd) "/" "shell.scm")))))
+			  (getcwd) "/" "shell.scm"))
+	      (chmod shell-file #o775))))
 
 (define (contains-arg? arg lst)
   (not (every* nil? (map (lambda (x)
@@ -63,6 +55,7 @@ Exiting." #:display? #t))
 	   (cond
 	    ((string-match "--default" argument)
 	     (init-default))
+
 	    ;; make part of its own init-template function vvv
 	    (gshell-templates-dir
 	     (if (directory-exists? (string-append gshell-templates-dir (car args)))
@@ -78,10 +71,12 @@ Exiting." #:display? #t))
 
 
 ;;; OPTIONS for INIT-FUNC
-;; --template [-t] -- select the template
+;; ADDED:
 ;; --default -- use the default template (default arg)
+;;
+;; (tentatively) PLANNED:
+;; --template [-t] -- select the template
 ;; --list [-l] -- list known templates
 ;; --dry-run -- display output of running command, without running.
 ;; --help [-h] -- show help
 ;; --force [-f] -- for non-empty dirs
-

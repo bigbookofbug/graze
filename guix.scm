@@ -1,3 +1,6 @@
+;;;; package build file (eventually)
+;;;; currently will not build anything
+;;;;
 (use-modules (guix build utils)
 	     (guix gexp)
 	     (guix packages)
@@ -6,7 +9,6 @@
 	     (guix git-download)
 	     (gnu packages guile)
 	     (ice-9 command-line)
-;	     (ice-9 format)
 	     (ice-9 optargs)
 	     (ice-9 pretty-print))
 

@@ -16,18 +16,19 @@
   (string-join opts " "))
 
 (define* (make-gshell #:key
+		      (pre-shell-hooks #f)
 		      (packages #f)
-		      (shell-hook #f)
+		      (command #f)
 		      (options #f))
-  (define (or-empty x)
-    (or x ""))
   (let ((shell-invoke
 	 (string-join (list
 		       "guix shell"
-		       (or-empty (make-package-list packages))
-		       (or-empty (make-shell-options options))
-		       (if (nil? shell-hook)
+		       (if (nil? packages) "" (make-package-list packages))
+		       (if (nil? options) "" (make-shell-options options))
+		       (if (nil? command)
 			   ""
-			   (string-append "-- " shell-hook)))
+			   (string-append "-- " command)))
 		      " ")))
+    (pretty-print (string-append "Running shell with following command:\n" shell-invoke) #:display? #t)
+    (if (nil? pre-shell-hooks) '() pre-shell-hooks)
     (system shell-invoke)))

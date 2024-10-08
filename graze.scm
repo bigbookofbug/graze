@@ -9,6 +9,7 @@
 
 (use-modules (guix build utils)
 	     (graze init)
+	     (graze common)
 	     (ice-9 command-line)
 	     (ice-9 match)
 	     (ice-9 optargs)
@@ -39,12 +40,15 @@
 	   (cond ((equal? command "init")
 		  (pretty-print "initializing site ..." #:display? #t)
 		  (init-func rest))
-		 ;;could make this into a macro mayb
-		 ((equal? command "develop")
-		  (pretty-print "I will run develope function :3" #:display? #t))
+		 ;;could make this into a macro maybe
+		 ((equal? command "shell")
+		  (pp-display "evaluating shell.scm...")
+		  (if (shell-file-found?)
+		      (system* "/usr/bin/env" "-S" "guile" "-e" "shell" "-s" "shell.scm")
+		      (pp-display "ERROR: no shell.scm found!")))
 		 ;; TODO - is this necessary ? we already have guix build
 		 ;; probably worth removing - replace w/ help for now
 		 ((equal? command "build")
-		  (pretty-print "I will run build functions UwU" #:display? #t))
+		  (pretty-print "I will run build function" #:display? #t))
 		 (else
 		  (pretty-print "Command not recognized! Run `ghsell help` for a list of available commands" #:display? #t)))))))
