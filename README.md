@@ -1,7 +1,7 @@
 # graze: a `guix shell` automation system
 
 ## about
-this is a (very) wip project intended to make writing complex `guix shell` invocations a bit easier. it is based loosely off of nix's flake system, `guile hall`, and my own personal gripes with how many flags have to be passed in order to create a complex, containerized shell environment like the ones described in[this blog post](https://guix.gnu.org/en/blog/2023/the-filesystem-hierarchy-standard-comes-to-guix-containers/).
+this is a (very) wip project intended to make writing complex `guix shell` invocations a bit easier. it is based loosely off of nix's flake system, `guile hall`, and my own personal gripes with how many flags have to be passed in order to create a complex, containerized shell environment like the ones described in [this blog post](https://guix.gnu.org/en/blog/2023/the-filesystem-hierarchy-standard-comes-to-guix-containers/).
 
 ## usage
 currently, only the default `shell.scm` is functional. invocing `graze.scm init` will place such a file in the current directory if one does not already exist. this file can then be modified, and `graze.scm shell` can be run to enter the shell environment.
